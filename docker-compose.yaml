@@ -14,7 +14,8 @@ services:
     # volumes:
     #   - ~/cassandra/:/var/lib/cassandra/data
  
-# If you want to have cqksh
+# If you want to have cqlsh
 #  docker exec -it `docker ps | grep cassandra:3.11.4 | cut -b 1-12` cqlsh
+
     
   

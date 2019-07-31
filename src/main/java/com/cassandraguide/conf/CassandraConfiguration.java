@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.cassandraguide.repository.ReservationRepository;
+import com.cassandraguide.repository.ReservationRepositoryWithQueryBuilder;
 import com.datastax.oss.driver.api.core.CqlIdentifier;
 import com.datastax.oss.driver.api.core.CqlSession;
 
@@ -22,7 +22,7 @@ import com.datastax.oss.driver.api.core.CqlSession;
 public class CassandraConfiguration {
     
     // Logger
-    private static final Logger logger = LoggerFactory.getLogger(ReservationRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(ReservationRepositoryWithQueryBuilder.class);
     
     // Contact point hostname, single host
     @Value("${cassandra.contactPoint:127.0.0.1}")
@@ -40,7 +40,7 @@ public class CassandraConfiguration {
     @Value("${cassandra.keyspaceName:reservation}")
     public String keyspaceName = "reservation";
     
-    // Do you want to drop schema a generate table again at startup
+    // Do you want to drop schema and generate tables at startup
     @Value("${cassandra.dropSchema:true}")
     public boolean dropSchema;
 
@@ -81,7 +81,7 @@ public class CassandraConfiguration {
     
     @Bean
     public CqlSession cqlSession() {
-        logger.info("Creating Keyspace and expected table in Cassandra if not present.");
+        logger.info("Creating (eventually dropping) keyspace and table to init");
         try(CqlSession tmpSession = CqlSession.builder()
                                .addContactPoint(new InetSocketAddress(getCassandraHost(), getCassandraPort()))
                                .withLocalDatacenter(getLocalDataCenterName())
@@ -90,9 +90,13 @@ public class CassandraConfiguration {
                 tmpSession.execute(dropKeyspace(keyspace()).ifExists().build());
                 logger.debug("+ Keyspace '{}' has been dropped (if existed)", keyspace());
             }
-            tmpSession.execute(createKeyspace(keyspace()).ifNotExists().withSimpleStrategy(1).build());
+            tmpSession.execute(createKeyspace(keyspace()).ifNotExists()
+                    .withSimpleStrategy(1)    // 1 is the replication factor
+                    .withDurableWrites(true)
+                    .build());
             logger.debug("+ Keyspace '{}' has been created (if needed)", keyspace());
         }
+        logger.info("Successfully initialized.");
         return CqlSession.builder()
                 .addContactPoint(new InetSocketAddress(getCassandraHost(), getCassandraPort()))
                 .withKeyspace(keyspace())

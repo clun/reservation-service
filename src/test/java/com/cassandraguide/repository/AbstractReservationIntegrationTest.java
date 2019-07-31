@@ -16,50 +16,53 @@ import com.cassandraguide.conf.CassandraConfiguration;
 import com.cassandraguide.model.Reservation;
 
 /**
- * An integration test for {@link ReservationRepositoryTest}. 
+ * Integration test for implementations of {@link ReservationRepository}. We expect to run 
+ * the same tests for 3 differents implementation (Simple, QueryBuilder and Mapper). This class
+ * will have all the logic and child classes will only initialized proper implementation.s 
+ * 
+ * REQUIRED ; DOCKER MUST BE STARTED
  * 
  * <p>We start a Cassandra container using TestContainers (mapping a random host and port).
  * <p>There will be a single Container and schema is reinitialized at each method (to speed up).
  * <p>This unit test does not require a Spring application context to be created.
  *
- * @author Jeffrey CARPENTER (@clunven)
- * @author Cedrick LUNVEN (@jscarp)s
+ * @author Jeffrey CARPENTER (@jscarp)
+ * @author Cedrick LUNVEN (@clunven)
  */
-public class ReservationRepositoryTestContainersIT {
+public abstract class AbstractReservationIntegrationTest {
     
-    /*
+    /**
      * Singleton Pattern avoid waiting container init for each method
      */
-    private static CassandraConfiguration cassandraConfig    = null;
-    private static GenericContainer<?>    cassandraContainer = null;
-    private static ReservationRepository  reservationRepo    = null;
-    static {
-        cassandraContainer = new CassandraContainer<>("cassandra:3.11.4");
-        cassandraContainer.start();
-    }
+    protected static CassandraConfiguration cassandraConfig    = null;
+    protected static GenericContainer<?>    cassandraContainer = null;
     
-    /* 
+    /** 
      * Initialize repository once as well against cassandra docker container
      * random port and hostname 
      */
     @BeforeAll
     public static void _initReservationRepository() {
-        // Mapping from Container to repository
+        cassandraContainer = new CassandraContainer<>("cassandra:3.11.4");
+        cassandraContainer.start();
         cassandraConfig = new CassandraConfiguration();
         cassandraConfig.setDropSchema(true);
         cassandraConfig.setCassandraHost(cassandraContainer.getContainerIpAddress());
         cassandraConfig.setCassandraPort(cassandraContainer.getMappedPort(9042));
-        reservationRepo = new ReservationRepository(cassandraConfig.cqlSession(), cassandraConfig.keyspace());
     }
+    
+    /** To be implemented by sub classes. */
+    protected abstract ReservationRepository initReservationRepository();
+    
+    protected ReservationRepository reservationRepo = null;
     
     /*
      * ReCreate keyspace and table before each test
      */
     @BeforeEach
     public void _recreateSchema() {
-        // Regenerate the keyspace
-        cassandraConfig.cqlSession();
-        reservationRepo.createReservationTables();
+        reservationRepo = initReservationRepository();
+        reservationRepo.createTables(cassandraConfig.cqlSession(), cassandraConfig.keyspace());
     }
     
     @Test

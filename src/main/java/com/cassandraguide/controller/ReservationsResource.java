@@ -17,7 +17,6 @@ package com.cassandraguide.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
-
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -33,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -88,7 +88,10 @@ public class ReservationsResource {
      * @param reservationService
      *      service implementation
      */
-    public ReservationsResource(ReservationRepository reservationService) {
+    public ReservationsResource(
+            //@Qualifier("reservation.repository.mapper")
+            @Qualifier("reservation.repository.querybuilder") 
+            ReservationRepository reservationService) {
         this.reservationService = reservationService;
     }
     

@@ -24,7 +24,7 @@
 		<swagger.version>2.9.2</swagger.version>
 		<junit-jupiter.version>5.4.2</junit-jupiter.version>
 		<junit-platform.version>1.4.2</junit-platform.version>
-		<oss-java-driver.version>4.0.1</oss-java-driver.version>
+		<oss-java-driver.version>4.1.0</oss-java-driver.version>
 		<testcontainers.version>1.11.3</testcontainers.version>
 
 		<version.maven.plugin.compiler>3.8.0</version.maven.plugin.compiler>
@@ -33,7 +33,7 @@
 
 	<dependencies>
 
-		<!-- Create a RESTFul Service -->
+		<!-- RESTFul Service -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -62,18 +62,24 @@
 			<artifactId>java-driver-query-builder</artifactId>
 			<version>${oss-java-driver.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.datastax.oss</groupId>
+			<artifactId>java-driver-mapper-runtime</artifactId>
+			<version>${oss-java-driver.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
-		<!-- Provides JSON serialization/deserialization for date/time types -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
 
-		<!-- Tests -->
+		<!-- *********************** -->
+		<!-- *** Tests *** -->
+		<!-- *********************** -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -122,6 +128,11 @@
 			<version>${junit-platform.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- Test against Docker Containers -->
 		<dependency>
 			<groupId>org.testcontainers</groupId>
@@ -135,14 +146,25 @@
 			<scope>test</scope>
 			<version>${testcontainers.version}</version>
 		</dependency>
-		
+		<!-- Mocking -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- Add driver keys to spring-boot config file -->
 		<dependency>
-           <groupId>org.springframework.boot</groupId>
-           <artifactId>spring-boot-configuration-processor</artifactId>
-           <optional>true</optional>
-        </dependency>
-        
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -159,8 +181,16 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.1</version>
 					<configuration>
 						<release>${java.version}</release>
+						<annotationProcessorPaths>
+							<path>
+								<groupId>com.datastax.oss</groupId>
+								<artifactId>java-driver-mapper-processor</artifactId>
+								<version>${oss-java-driver.version}</version>
+							</path>
+						</annotationProcessorPaths>
 					</configuration>
 				</plugin>
 			</plugins>

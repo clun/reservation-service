@@ -24,8 +24,7 @@ import io.swagger.annotations.ApiModelProperty;
  * Entity working with Reservation on Cassandra.
  */
 @ApiModel(value="ReservationConfirmation", 
-description="ReservationConfirmation  when the confirmation has been generated")
-
+         description="ReservationConfirmation  when the confirmation has been generated")
 public class ReservationConfirmation extends ReservationRequest {
 
     /** Serial. */
