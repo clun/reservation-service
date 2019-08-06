@@ -226,24 +226,7 @@ public class ReservationRepositoryWithQueryBuilder implements ReservationReposit
                          .collect(Collectors.toList());  // Back to list objects
     }
 
-    /**
-     * Utility method to marshall a row as expected Reservation Bean.
-     *
-     * @param row
-     *      current row fron ResultSet
-     * @return
-     *      object
-     */
-    private Reservation mapRowToReservation(Row row) {
-        Reservation r = new Reservation();
-        r.setHotelId(row.getString(HOTEL_ID));
-        r.setConfirmationNumber(row.getString(CONFIRMATION_NUMBER));
-        r.setGuestId(row.getUuid(GUEST_ID));
-        r.setRoomNumber(row.getShort(ROOM_NUMBER));
-        r.setStartDate(row.getLocalDate(START_DATE));
-        r.setEndDate(row.getLocalDate(END_DATE));
-        return r;
-    }
+    
     
     
 

@@ -10,6 +10,7 @@ import java.util.Optional;
 import com.cassandraguide.model.Reservation;
 import com.datastax.oss.driver.api.core.CqlIdentifier;
 import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.metadata.schema.ClusteringOrder;
 import com.datastax.oss.driver.api.core.type.DataTypes;
 import com.datastax.oss.driver.api.core.type.UserDefinedType;
@@ -109,7 +110,26 @@ public interface ReservationRepository {
       List<Reservation> findByHotelAndDate(String hotelId, LocalDate date);
       
       /**
-       * Create Keyspace and relevant tables as per defined in 'reservation.cql'.
+       * Utility method to marshall a row as expected Reservation Bean.
+       *
+       * @param row
+       *      current row fron ResultSet
+       * @return
+       *      object
+       */
+      default Reservation mapRowToReservation(Row row) {
+         Reservation r = new Reservation();
+         r.setHotelId(row.getString(HOTEL_ID));
+         r.setConfirmationNumber(row.getString(CONFIRMATION_NUMBER));
+         r.setGuestId(row.getUuid(GUEST_ID));
+         r.setRoomNumber(row.getShort(ROOM_NUMBER));
+         r.setStartDate(row.getLocalDate(START_DATE));
+         r.setEndDate(row.getLocalDate(END_DATE));
+         return r;
+     }
+      
+     /**
+      * Create Keyspace and relevant tables as per defined in 'reservation.cql'.
       *
       * @param cqlSession
       *          connectivity to Cassandra

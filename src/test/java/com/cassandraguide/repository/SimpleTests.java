@@ -33,7 +33,7 @@ public class SimpleTests {
         cqlSession       = cc.cqlSession();
         repoMapper       = new ReservationRepositoryWithMapper(cqlSession, cc.keyspace());
         repoQueryBuilder = new ReservationRepositoryWithQueryBuilder(cqlSession, cc.keyspace());
-        repoSimple       = new ReservationRepositorySimple(cqlSession, cc.keyspace());
+        repoSimple       = new ReservationRepositorySimpleStatement(cqlSession, cc.keyspace());
     }
     
     @Test

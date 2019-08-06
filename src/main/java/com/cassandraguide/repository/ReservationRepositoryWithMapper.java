@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import com.cassandraguide.mapper.ReservationByConfirmationEntity;
+import com.cassandraguide.mapper.ReservationByHotelDateEntity;
 import com.cassandraguide.mapper.ReservationDao;
 import com.cassandraguide.mapper.ReservationMapperBuilder;
 import com.cassandraguide.model.Reservation;
@@ -62,6 +63,7 @@ public class ReservationRepositoryWithMapper implements ReservationRepository {
     /** {@inheritDoc} */
     @Override
     public String upsert(Reservation res) {
+        
         Assert.notNull(res, "reservation should not be null");
         if (null == res.getConfirmationNumber()) {
             // Generating a new reservation number if none has been provided
@@ -100,6 +102,7 @@ public class ReservationRepositoryWithMapper implements ReservationRepository {
     /** {@inheritDoc} */
     @Override
     public void delete(String confirmationNumber) {
+        Assert.hasLength(confirmationNumber, "ConfirmationNumber should not be null nor empty");
         findByConfirmationNumber(confirmationNumber).ifPresent(reservationDao::deleteReservation);
     }
 
@@ -108,8 +111,10 @@ public class ReservationRepositoryWithMapper implements ReservationRepository {
     public List<Reservation> findByHotelAndDate(String hotelId, LocalDate localDate) {
         Assert.hasLength(hotelId, "Hotel Id should not be null nor empty");
         Assert.notNull(localDate, "Local Date object should not be null nor empty");
-        //reservationDao.findByHotelDate(hotelId, localDate, (short) 1);
-        return null;
+        return reservationDao.findByHotelAndDate(hotelId, localDate)
+                .all().stream()                                   // Because we are good people
+                .map(ReservationByHotelDateEntity::asReservation) // Mapping row as Reservation
+                .collect(Collectors.toList());                    // Back to list objects
     }
 
 }

@@ -74,15 +74,21 @@ public interface ReservationDao {
     @Query("SELECT * FROM ${keyspaceId}.${tableId}")
     PagingIterable<ReservationByConfirmationEntity> findAll();
     
-    @Delete
-    void deleteReservationByConfirmation(ReservationByConfirmationEntity res);
+    //@Delete
+    //void deleteReservationByConfirmation(ReservationByConfirmationEntity res);
     
-    @Delete
-    void deleteReservationByHotelDate(ReservationByHotelDateEntity res);
+    //@Delete
+    //void deleteReservationByHotelDate(ReservationByHotelDateEntity res);
     
     @QueryProvider(
             providerClass = ReservationDaoHelper.class,
             entityHelpers = { ReservationByHotelDateEntity.class, ReservationByConfirmationEntity.class})
     void deleteReservation(Reservation res);
+    
+    @Query("SELECT * "
+         + "FROM ${keyspaceId}.${tableId} "
+         + "WHERE hotel_id = :hotel_id "
+         + "AND start_date = :start_date")
+    PagingIterable<ReservationByHotelDateEntity> findByHotelAndDate(String hotel_id, LocalDate start_date);
     
 }

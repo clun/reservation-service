@@ -1,65 +1,35 @@
 package com.cassandraguide.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.datastax.oss.driver.api.core.CqlIdentifier;
-import com.datastax.oss.driver.api.core.CqlSession;
-import com.datastax.oss.driver.api.core.cql.BoundStatement;
-import com.datastax.oss.driver.api.core.cql.PreparedStatement;
-import com.datastax.oss.driver.api.core.cql.ResultSet;
-
 /**
- * Testing repository with Cassandra Connectivity Mocked
+ * Testing repository with Cassandra Connectivity Mocked.
+ * 
+ * All test logic has been moved in the parent class to test the same behaviour with the
+ * 3 implementations.
  */
 @ExtendWith(MockitoExtension.class)
-public class WithQueryBuilder_1_UnitTest {
+public class WithQueryBuilder_1_UnitTest extends AbstractReservationUnitTest {
     
-    @Mock 
-    private CqlSession cqlSession;
-    @Mock
-    private CqlIdentifier keyspaceName;
-    @Mock
-    private PreparedStatement psExistReservation;
-    @Mock
-    private PreparedStatement psFindReservation;
-    @Mock
-    private PreparedStatement psInsertReservationByHotel;
-    @Mock
-    private PreparedStatement psInsertReservationByConfirmation;
-    @Mock
-    private PreparedStatement psDeleteReservation;
-    @Mock
-    private PreparedStatement psSearchReservation;
-    @Mock
-    private BoundStatement mockBound;
-    @Mock
-    private ResultSet mockResultSet;
-    
-    private ReservationRepositoryWithQueryBuilder testedRepository;
-    
-    @BeforeEach
-    public void _init() {
-        testedRepository = new ReservationRepositoryWithQueryBuilder(cqlSession, keyspaceName,
-                psExistReservation, psFindReservation, psInsertReservationByHotel,
-                psInsertReservationByConfirmation, psDeleteReservation, psSearchReservation);
-    }
-    
-    @Test
-    @DisplayName("Confirmation is required to evaluate reservation existence")
-    public void existReservation_should_throw_if_null_confirmationnumber() {
-        assertThatThrownBy(() -> { testedRepository.exists(null);})
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("should not be null");
+    /** {@inheritDoc} */
+    @Override
+    protected ReservationRepository initReservationRepository() {
+        return new ReservationRepositoryWithQueryBuilder(
+                cqlSession, keyspaceName, 
+                psExistReservation,
+                psFindReservation,
+                psInsertReservationByHotel,
+                psInsertReservationByConfirmation,
+                psDeleteReservation,
+                psDeleteReservationConfirmation,
+                psSearchReservation);
     }
     
     @Test
