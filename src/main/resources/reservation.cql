@@ -21,7 +21,7 @@
  */
   
 CREATE KEYSPACE reservation
-    WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 3};
+    WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
 
 CREATE TYPE reservation.address (
     street text,
