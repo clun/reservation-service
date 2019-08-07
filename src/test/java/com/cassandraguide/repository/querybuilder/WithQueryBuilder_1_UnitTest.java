@@ -1,4 +1,4 @@
-package com.cassandraguide.repository;
+package com.cassandraguide.repository.querybuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -8,6 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.cassandraguide.repository.AbstractReservationUnitTest;
+import com.cassandraguide.repository.ReservationRepository;
+import com.cassandraguide.repository.ReservationRepositoryWithQueryBuilder;
 
 /**
  * Testing repository with Cassandra Connectivity Mocked.

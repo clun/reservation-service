@@ -1,7 +1,11 @@
-package com.cassandraguide.repository;
+package com.cassandraguide.repository.simple;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.cassandraguide.repository.AbstractReservationUnitTest;
+import com.cassandraguide.repository.ReservationRepository;
+import com.cassandraguide.repository.ReservationRepositorySimpleStatement;
 
 /**
  * Testing repository with Cassandra Connectivity Mocked

@@ -1,4 +1,8 @@
-package com.cassandraguide.repository;
+package com.cassandraguide.repository.querybuilder;
+
+import com.cassandraguide.repository.AbstractReservationIntegrationTest;
+import com.cassandraguide.repository.ReservationRepository;
+import com.cassandraguide.repository.ReservationRepositoryWithQueryBuilder;
 
 /**
  * Running integration tests on {@link ReservationRepositoryWithQueryBuilder}.

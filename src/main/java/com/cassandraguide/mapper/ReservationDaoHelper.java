@@ -62,14 +62,20 @@ public class ReservationDaoHelper {
     }
     
     void deleteReservation(Reservation res) {
+        
+       // Mapping only attributes for the PK
+       ReservationByHotelDateEntity r1 = new ReservationByHotelDateEntity();
+       r1.setHotelId(res.getHotelId());
+       r1.setRoomNumber(res.getRoomNumber());
+       r1.setStartDate(res.getStartDate());
+       
+       ReservationByConfirmationEntity r2 = new ReservationByConfirmationEntity();
+       r2.setConfirmationNumber(res.getConfirmationNumber());
+       
        cqlSession.execute(
             BatchStatement.builder(DefaultBatchType.LOGGED)
-                .addStatement(bind(psDeleteReservationByHotelDate, 
-                                   new ReservationByHotelDateEntity(res), 
-                                   resaByHotelDateHelper))
-                .addStatement(bind(psDeleteReservationByConfirmation, 
-                                   new ReservationByConfirmationEntity(res), 
-                                   resaByConfirmationHelper))
+                .addStatement(bind(psDeleteReservationByHotelDate, r1,resaByHotelDateHelper))
+                .addStatement(bind(psDeleteReservationByConfirmation, r2, resaByConfirmationHelper))
                 .build());
     }
     
